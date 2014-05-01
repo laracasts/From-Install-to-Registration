@@ -1,15 +1,20 @@
 <?php
 
+use Acme\Forms\RegistrationForm;
+
 class RegistrationController extends BaseController {
 
 	/**
-	 * Display a listing of the resource.
-	 *
-	 * @return Response
+	 * @var RegistrationForm
 	 */
-	public function index()
+	private $registrationForm;
+
+	/**
+	 * @param RegistrationForm $registrationForm
+	 */
+	function __construct(RegistrationForm $registrationForm)
 	{
-        return View::make('registration.index');
+		$this->registrationForm = $registrationForm;
 	}
 
 	/**
@@ -19,7 +24,7 @@ class RegistrationController extends BaseController {
 	 */
 	public function create()
 	{
-        return View::make('registration.create');
+		return View::make('registration.create');
 	}
 
 	/**
@@ -29,55 +34,15 @@ class RegistrationController extends BaseController {
 	 */
 	public function store()
 	{
-		$user = User::create(Input::only('username', 'email', 'password'));
+		$input = Input::only('username', 'email', 'password', 'password_confirmation');
 
-        Auth::login($user);
+		$this->registrationForm->validate($input);
 
-        return Redirect::home();
-	}
+		$user = User::create($input);
 
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function show($id)
-	{
-        return View::make('registration.show');
-	}
+		Auth::login($user);
 
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function edit($id)
-	{
-        return View::make('registration.edit');
-	}
-
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function update($id)
-	{
-		//
-	}
-
-	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function destroy($id)
-	{
-		//
+		return Redirect::home();
 	}
 
 }

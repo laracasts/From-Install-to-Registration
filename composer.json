@@ -4,7 +4,8 @@
 	"keywords": ["framework", "laravel"],
 	"license": "MIT",
 	"require": {
-		"laravel/framework": "4.1.*"
+		"laravel/framework": "4.1.*",
+		"laracasts/validation": "~1.0"
 	},
 	"autoload": {
 		"classmap": [
@@ -14,7 +15,11 @@
 			"app/database/migrations",
 			"app/database/seeds",
 			"app/tests/TestCase.php"
-		]
+		],
+        "files": ["app/Acme/helpers.php"],
+        "psr-4": {
+            "Acme\\": "app/Acme"
+        }
 	},
 	"scripts": {
 		"post-install-cmd": [

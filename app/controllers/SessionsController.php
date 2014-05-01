@@ -1,15 +1,20 @@
 <?php
 
+use Acme\Forms\LoginForm;
+
 class SessionsController extends BaseController {
 
 	/**
-	 * Display a listing of the resource.
-	 *
-	 * @return Response
+	 * @var Acme\Forms\LoginForm
 	 */
-	public function index()
+	protected $loginForm;
+
+	/**
+	 * @param LoginForm $loginForm
+	 */
+	function __construct(LoginForm $loginForm)
 	{
-        return View::make('sessions.index');
+		$this->loginForm = $loginForm;
 	}
 
 	/**
@@ -19,7 +24,7 @@ class SessionsController extends BaseController {
 	 */
 	public function create()
 	{
-        return View::make('sessions.create');
+		return View::make('sessions.create');
 	}
 
 	/**
@@ -29,40 +34,14 @@ class SessionsController extends BaseController {
 	 */
 	public function store()
 	{
-		//
-	}
+		$this->loginForm->validate($input = Input::only('email', 'password'));
 
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function show($id)
-	{
-        return View::make('sessions.show');
-	}
+		if (Auth::attempt($input))
+		{
+			return Redirect::intended('/');
+		}
 
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function edit($id)
-	{
-        return View::make('sessions.edit');
-	}
-
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function update($id)
-	{
-		//
+		return Redirect::back()->withInput()->withFlashMessage('Invalid credentials provided');
 	}
 
 	/**
@@ -75,7 +54,7 @@ class SessionsController extends BaseController {
 	{
 		Auth::logout();
 
-        return Redirect::home();
+		return Redirect::home();
 	}
 
 }
